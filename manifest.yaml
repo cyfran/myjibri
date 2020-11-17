@@ -28,7 +28,7 @@ nodes:
   cloudlets: 48
   extip: true
   displayName: Jitsi Server
-  addons: change-domain
+  #addons: change-domain
 
 settings:
   domain: 
