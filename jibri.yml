@@ -7,6 +7,7 @@ services:
         volumes:
             - ${CONFIG}/jibri:/config:Z
             - /dev/shm:/dev/shm
+            - ${CONFIG}/jibri/.asoundrc:/home/jibri/.asoundrc
         cap_add:
             - SYS_ADMIN
             - NET_BIND_SERVICE
@@ -28,8 +29,9 @@ services:
             - JIBRI_STRIP_DOMAIN_JID
             - JIBRI_LOGS_DIR
             - DISPLAY=:0
+            - TZ
         networks:
             meet.jitsi:
 
 networks:
-meet.jitsi:
+    meet.jitsi:
