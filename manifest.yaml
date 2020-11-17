@@ -2,7 +2,7 @@ type: install
 id: jitsi
 version: 1.7
 name: Jitsi Video Conferencing
-baseUrl: https://raw.githubusercontent.com/jelastic-jps/jitsi/master
+baseUrl: https://raw.githubusercontent.com/cyfran/myjibri/master
 logo: /images/logo_small.svg?sanitize=true
 
 description: 
@@ -28,7 +28,6 @@ nodes:
   cloudlets: 48
   extip: true
   displayName: Jitsi Server
-  #addons: change-domain
 
 settings:
   domain: 
