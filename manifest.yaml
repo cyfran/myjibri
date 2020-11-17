@@ -153,22 +153,23 @@ actions:
           slave.pcm "aduplex"
         }' > ~/.jitsi-meet-cfg/jibri/.asoundrc
 
-        docker-compose -f docker-compose.yml -f jibri.yml up -d
+        wget -O ~/.jitsi-meet-cfg/jibri.xml https://raw.githubusercontent.com/cyfran/myjibri/master/jibri.xml
+        docker-compose -f jibri.yml up -d
 
         #Checking of container is up and running 
-        until [ "`/usr/bin/docker inspect -f {{.State.Running}} docker-jitsi-meet_prosody_1`"=="true" ]; do
-          sleep 1
-          print '.'
-        done;
+        #until [ "`/usr/bin/docker inspect -f {{.State.Running}} docker-jitsi-meet_prosody_1`"=="true" ]; do
+        #  sleep 1
+        #  print '.'
+        #done;
 
         #Adding admin user 
-        docker-compose exec -T prosody prosodyctl --config /config/prosody.cfg.lua register "${globals.user}" meet.jitsi "${globals.password}"
-        [ "${settings.loadtest:}" ] && {
-          yum install -y java-1.8.0-openjdk-devel
-          wget https://github.com/jelastic-jps/jitsi/raw/jibri/test/GCStats.jar
-          java -jar GCStats.jar
-        }
-                
+        #docker-compose exec -T prosody prosodyctl --config /config/prosody.cfg.lua register "${globals.user}" meet.jitsi "${globals.password}"
+        #[ "${settings.loadtest:}" ] && {
+        #  yum install -y java-1.8.0-openjdk-devel
+        #  wget https://github.com/jelastic-jps/jitsi/raw/jibri/test/GCStats.jar
+        #  java -jar GCStats.jar
+        #}
+               
         echo OK
     - env.file.AddFavorite:
         nodeGroup: cp
@@ -186,46 +187,10 @@ actions:
         CMD="chown 999 -R /dev/snd"
         echo $CMD >> /etc/rc.d/rc.local
         $CMD
-        
-addons:
-  - id: change-domain
-    name: Domain Configuration
-    description: You can change your current domain and issue valid Let's Encrypt certificates. 
-    buttons:    
-      - confirmText: Are you sure you want to proceed?
-        loadingText: Changing domain...
-        action: changeDomain
-        caption: Change
-        successText: The domain has been updated successfully!
-        settings: domain
-        title: Please specify the new domain name 
-        
-    actions:
-      changeDomain:
-        - cmd[cp]: |-
-            rm -f ~/.jitsi-meet-cfg/web/nginx/ssl.conf ~/.jitsi-meet-cfg/web/config.js            
-            cd docker-jitsi-meet
-            
-            SSL_DOMAIN="${settings.domain}"
-            DOMAIN="${env.domain}"; REGION=${DOMAIN#*.}
-            FAKE_SSL=""
-            if [[ "$SSL_DOMAIN" == *"$DOMAIN"* ]]; then   
-              FAKE_SSL="--test-cert --break-my-certs"
-              #check if region is in public suffix list              
-              if wget -qO- https://github.com/publicsuffix/list/raw/master/public_suffix_list.dat | grep -q "$REGION"; then FAKE_SSL=""; fi
-            fi
-                        
-            sed -i.bak \
-              -e "s|LETSENCRYPT_DOMAIN=.*|LETSENCRYPT_DOMAIN=${settings.domain}|g" \
-              -e "s|LETSENCRYPT_EMAIL=.*|LETSENCRYPT_EMAIL=${user.email} $FAKE_SSL|g" \
-              -e "s|PUBLIC_URL=.*|PUBLIC_URL=https://${settings.domain}|g" \
-              .env
-            docker-compose -f docker-compose.yml -f jibri.yml up -d --force-recreate
+       
     
 success: | 
-  **Jitsi Server**: [https://${env.domain}/](https://${env.domain}/)  
-  **User**: ${globals.user}  
-  **Password**: ${globals.password}    
+  **Jibri installed**
 
   Useful links:
   * [Secure, Simple and Scalable Video Conferencing with Jitsi](https://jelastic.com/blog/jitsi-video-conferencing/)
