@@ -152,7 +152,7 @@ actions:
           slave.pcm "aduplex"
         }' > ~/.jitsi-meet-cfg/jibri/.asoundrc
 
-        wget -O ~/.jitsi-meet-cfg/jibri.yml https://raw.githubusercontent.com/cyfran/myjibri/master/jibri.yml
+        wget -O ~/docker-jitsi-meet/jibri.yml https://raw.githubusercontent.com/cyfran/myjibri/master/jibri.yml
         docker-compose -f jibri.yml up -d
 
         #Checking of container is up and running 
